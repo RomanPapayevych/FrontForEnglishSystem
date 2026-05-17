@@ -1,8 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
 import { IoIosArrowBack } from "react-icons/io";
 import { GrSchedule } from "react-icons/gr";
 import { MdOutlineSchedule } from "react-icons/md";
@@ -26,13 +25,8 @@ const GroupDetails = () =>{
     const [selectedHomeworkId, setSelectedHomeworkId] = useState(null);
     const [editContent, setEditContent] = useState('');
 
-
-    const [students, setStudents] = useState([]);
-    const [selectedGroupName, setSelectedGroupName] = useState(''); 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
     useEffect(() => {
-        if (group.id) {
+        if (group?.id) {
             const fetchLessons = async () => {
                 try {
                     const response = await axios.get(`https://localhost:7186/api/Teacher/LessonsOfGroup/${group.id}`,{ 
@@ -45,7 +39,6 @@ const GroupDetails = () =>{
                         description: lesson.description,
                         homework: lesson.homework.$values,
                     }))
-                    console.log("Server response:", response.data);
                     setLessons(cleanedLessons);
                 } catch (error) {
                     console.error("Error fetching lessons:", error.response?.data || error.message);
@@ -54,62 +47,35 @@ const GroupDetails = () =>{
             };
             fetchLessons();
         }
-    }, [group]);
+    }, [group, token]);
 
-    
-    const createLesson = async () => {
-        navigate('/createLesson', {state: {group, email, id}})
-    };
     const RemoveTeacherFromGroup = async (groupId) => {
         if (!groupId) {
             setMessage("Group ID is missing. Please refresh the page.");
             return;
         }
         try{
-            const response = await axios.delete(`https://localhost:7186/api/Teacher/${groupId}/RemoveTeacherFromGroup`, {
+            await axios.delete(`https://localhost:7186/api/Teacher/${groupId}/RemoveTeacherFromGroup`, {
                 headers : {Authorization : `Bearer ${token}`}, 
             });
-            console.log("You left the group successfully:", response.data);
             navigate("/profile", {state: {email, id}})
-            setMessage("You have successfully left the group.");
         }catch(error){
             console.error("Error leaving the group:", error.response?.data || error.message);
             setMessage(error.response?.data?.message || "An error occurred while leaving the group.");
         }
     }
-    const ShowStudentsOfGroup = async (groupId, groupName) => {
-        if (!groupId) {
-            setMessage("Group ID is missing. Please refresh the page.");
-            return;
-        }
-        try{
-            const response = await axios.get(`https://localhost:7186/api/Teacher/${groupId}/GetStudentsFromGroup`, {
-                headers : {Authorization : `Bearer ${token}`}, 
-            });
-            console.log("You retrieved list of students successfully:", response.data);
-            setMessage("ou retrieved list of students successfully.");
-            setStudents(response.data.$values);
-            setSelectedGroupName(groupName)
-            setIsModalOpen(true);
-        }catch(error){
-            console.error("Error leaving the group:", error.response?.data || error.message);
-            setMessage(error.response?.data?.message || "An error occurred while leaving the group.");
-        }
-    }
+
     const deleteLesson = async (lessonId) => {
-        if(!lessonId){
-            console.error("Lesson ID is missing or invalid:", lessonId);
-            return
-        }
+        if(!lessonId) return;
         try{
-            const response = await axios.delete(`https://localhost:7186/api/Teacher/${lessonId}/RemoveLesson`, {
+            await axios.delete(`https://localhost:7186/api/Teacher/${lessonId}/RemoveLesson`, {
                 headers : {Authorization : `Bearer ${token}`}, 
             });
             setLessons((prevLessons) => prevLessons.filter((l) => l.id !== lessonId));
             setMessage("Lesson deleted successfully.");
         }catch(error){
             console.error("lesson not deleted: ", error.response?.data || error.message);
-            setMessage(error.response?.data?.message || "lesson not deleted");
+            setMessage(error.response?.data?.message || "Lesson not deleted");
         }
     }
 
@@ -139,21 +105,15 @@ const GroupDetails = () =>{
             setMessage("Please provide valid homework description.");
             return;
         }
-        const contentData = {
-            content: content,
-        }
         try{
-            const response = await axios.post(`https://localhost:7186/api/Teacher/${selectedLessonId}/Homework`, contentData ,{
+            const response = await axios.post(`https://localhost:7186/api/Teacher/${selectedLessonId}/Homework`, { content }, {
                 headers : {Authorization : `Bearer ${token}`}, 
             })
             const newHomework = response.data;
             setLessons((prevLessons) =>
                 prevLessons.map((lesson) =>
                     lesson.id === selectedLessonId
-                        ? {
-                            ...lesson,
-                            homework: [...lesson.homework, newHomework], 
-                        }
+                        ? { ...lesson, homework: [...lesson.homework, newHomework] }
                         : lesson
                 )
             );
@@ -167,10 +127,11 @@ const GroupDetails = () =>{
 
     const deleteHomework = async (homeworkId, lessonId) => {
         try{
-            const response = await axios.delete(`https://localhost:7186/api/Teacher/${homeworkId}/RemoveHomework`, {
+            await axios.delete(`https://localhost:7186/api/Teacher/${homeworkId}/RemoveHomework`, {
                 headers : {Authorization : `Bearer ${token}`}, 
             })
             setLessons((prevLessons) => prevLessons.map((lesson) => lesson.id === lessonId ? {...lesson, homework: lesson.homework.filter((hw) => hw.id !== homeworkId)}: lesson))
+            setMessage("Homework deleted.");
         }catch(error) {
             console.error("Homework not deleted: ", error.response?.data || error.message);
             setMessage(error.response?.data?.message || "Homework not deleted")
@@ -179,16 +140,14 @@ const GroupDetails = () =>{
 
     const updateHomework = async () => {
         try{
-            const response = await axios.put(`https://localhost:7186/api/Teacher/${selectedHomeworkId}/UpdateHomework`, {content: editContent }, {
+            await axios.put(`https://localhost:7186/api/Teacher/${selectedHomeworkId}/UpdateHomework`, {content: editContent }, {
                 headers : {Authorization : `Bearer ${token}`}, 
             })
             setLessons(prevLessons => 
                 prevLessons.map(lesson => ({
                     ...lesson,
                     homework: lesson.homework.map(hw =>
-                        hw.id === selectedHomeworkId
-                            ? { ...hw, content: editContent }
-                            : hw
+                        hw.id === selectedHomeworkId ? { ...hw, content: editContent } : hw
                     )
                 }))
             );
@@ -199,192 +158,195 @@ const GroupDetails = () =>{
             setMessage(error.response?.data?.message || "Homework not changed")
         }
     }
-    
-    const formatDisplayTime = (dateTime) => {
-        const formattedDate = new Date(dateTime);
-        return formattedDate.toLocaleDateString("uk-UA");
-    };
 
     const goBack = () => {
         navigate("/profile", {state: {email, id}})
     }
-    
+
+    const formatDate = (value) => new Date(value).toLocaleDateString("uk-UA");
+    const formatTime = (value) => new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     return(
-        <div style={{backgroundColor:"white"}}>
-            <button onClick={goBack} className="go-back-button"><IoIosArrowBack size={30}/></button>
-            <div className='teacher-space-btw-container'>
-                <div>
-                    <div className='teacher-group-details'>
-                        <div className='align-container'>
-                            <h2 className='teacher-h'>{group?.name}</h2>
-                        </div>
-                        <div className='card-info'>
-                            <div className='card-column flex margin-top'>
-                                <div>
-                                    <GrSchedule className='card-icon'/>
-                                </div>
-                                <div>
-                                    {/* <p className='card-column-p'>Duration of studying:</p> */}
-                                    <p className='card-column-p'>{new Date(group?.startTime).toLocaleDateString()} - {new Date(group?.endTime).toLocaleDateString()}</p>
-                                </div>
+        <div className="group-details-page">
+            <header className="group-details-page__topbar">
+                <button type="button" onClick={goBack} className="group-details-page__back" aria-label="Go back">
+                    <IoIosArrowBack size={22} />
+                    <span>Back</span>
+                </button>
+                {message && <p className="group-details-page__toast" role="status">{message}</p>}
+            </header>
+
+            <div className="group-details-page__layout">
+                <aside className="group-details-page__sidebar">
+                    <h1 className="group-details-page__title">{group?.name}</h1>
+                    <ul className="group-details-page__meta">
+                        <li>
+                            <GrSchedule className="group-details-page__meta-icon" aria-hidden />
+                            <div>
+                                <span className="group-details-page__meta-label">Study period</span>
+                                <span className="group-details-page__meta-value">
+                                    {formatDate(group?.startTime)} вЂ“ {formatDate(group?.endTime)}
+                                </span>
                             </div>
-                            <div className='card-column flex margin-top'>
-                                <div>
-                                    <MdOutlineSchedule className='card-icon'/>
-                                </div>
-                                <div>
-                                    {/* <p className='card-column-p'>Lesson time:</p> */}
-                                    <p className='card-column-p'>
-                                        {new Date(group?.startTimeOfLesson).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(group?.endTimeOfLesson).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}  
-                                    </p>
-                                </div>
+                        </li>
+                        <li>
+                            <MdOutlineSchedule className="group-details-page__meta-icon" aria-hidden />
+                            <div>
+                                <span className="group-details-page__meta-label">Lesson time</span>
+                                <span className="group-details-page__meta-value">
+                                    {formatTime(group?.startTimeOfLesson)} вЂ“ {formatTime(group?.endTimeOfLesson)}
+                                </span>
                             </div>
-                            <div className='card-column flex margin-top'>
-                                <div>
-                                    <RxPerson className='card-icon'/>
-                                </div>
-                                <div>
-                                    {/* <p className='card-column-p'>Teacher:</p> */}
-                                    <p className='card-column-p'>{group?.teacher ? `${group.teacher.firstName} ${group.teacher.lastName}` : 'No teacher assigned'}</p>
-                                </div>
+                        </li>
+                        <li>
+                            <RxPerson className="group-details-page__meta-icon" aria-hidden />
+                            <div>
+                                <span className="group-details-page__meta-label">Teacher</span>
+                                <span className="group-details-page__meta-value">
+                                    {group?.teacher ? `${group.teacher.firstName} ${group.teacher.lastName}` : 'Not assigned'}
+                                </span>
                             </div>
-                            <div className='card-colum flex margin-top'>
-                                <div>
-                                    <GrSchedules className='card-icon'/>
-                                </div>
-                                <div>
-                                    {/* <p className='card-column-p'>Schedule:</p> */}
-                                    <p className='card-column-p'>{group?.daysOfWeek?.join(", ")}</p>
-                                </div>
+                        </li>
+                        <li>
+                            <GrSchedules className="group-details-page__meta-icon" aria-hidden />
+                            <div>
+                                <span className="group-details-page__meta-label">Schedule</span>
+                                <span className="group-details-page__meta-value">{group?.daysOfWeek?.join(", ")}</span>
                             </div>
-                        </div>
-                        <button onClick={() => RemoveTeacherFromGroup(group.id)}>Leave group</button>
+                        </li>
+                    </ul>
+                    <button
+                        type="button"
+                        className="group-details-page__leave-btn"
+                        onClick={() => RemoveTeacherFromGroup(group.id)}
+                    >
+                        Leave group
+                    </button>
+                </aside>
+
+                <main className="group-details-page__main">
+                    <div className="group-details-page__main-header">
+                        <h2 className="group-details-page__section-title">Lessons</h2>
+                        <span className="group-details-page__lesson-count">{lessons.length} total</span>
                     </div>
-                </div>
-                <div className='teacher-container'>
-                    <div className='align-container'>
-                        <h2 className='teacher-h'>Lessons</h2>
-                    </div>
-                    <div className='align-container'>
-                        {lessons.length > 0 ? (
-                            <div className="user-grid">
-                                {lessons.map((lesson) => (
-                                    <div className='group-details' key={lesson.id}>
-                                        <p>Date: {new Date(lesson.date).toLocaleDateString()}</p>
-                                        <p>Topic: {lesson.topic}</p>
-                                        <p style={{ whiteSpace: "pre-wrap" }}>Description: {lesson.description}</p>
-                                        <p>Homework:</p>
+
+                    {lessons.length > 0 ? (
+                        <div className="group-details-page__lessons">
+                            {lessons.map((lesson) => (
+                                <article className="group-details-page__lesson-card" key={lesson.id}>
+                                    <header className="group-details-page__lesson-header">
+                                        <time className="group-details-page__lesson-date" dateTime={lesson.date}>
+                                            {formatDate(lesson.date)}
+                                        </time>
+                                        <h3 className="group-details-page__lesson-topic">{lesson.topic}</h3>
+                                    </header>
+
+                                    <p className="group-details-page__lesson-desc">{lesson.description}</p>
+
+                                    <section className="group-details-page__homework-block">
+                                        <h4 className="group-details-page__homework-title">Homework</h4>
                                         {Array.isArray(lesson.homework) && lesson.homework.length > 0 ? (
-                                            <ul>
+                                            <ul className="group-details-page__homework-list">
                                                 {lesson.homework.map((hw) => (
-                                                    <div key={hw.id}>
-                                                        {hw.content}
-                                                        <button onClick={(() => deleteHomework(hw.id, lesson.id))}>Delete Homework</button>
-                                                        <button onClick={(() => openEditHomeworkModal(hw.id, hw.content))}>Edit Homework</button>
-                                                    </div>
+                                                    <li className="group-details-page__homework-item" key={hw.id}>
+                                                        <p className="group-details-page__homework-text">{hw.content}</p>
+                                                        <div className="group-details-page__homework-actions">
+                                                            <button
+                                                                type="button"
+                                                                className="group-details-page__btn group-details-page__btn--ghost"
+                                                                onClick={() => openEditHomeworkModal(hw.id, hw.content)}
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="group-details-page__btn group-details-page__btn--danger"
+                                                                onClick={() => deleteHomework(hw.id, lesson.id)}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </li>
                                                 ))}
                                             </ul>
-                                        ):(
-                                            <p>No homework yet</p>
+                                        ) : (
+                                            <p className="group-details-page__homework-empty">No homework yet</p>
                                         )}
-                                        <button onClick={(() => deleteLesson(lesson.id))}>Delete Lesson</button>
-                                        <button onClick={(() => navigate("/editLesson", {state: {lesson, group, token}}))}>Edit Lesson</button>
-                                        <button onClick={(() => openHomeworkModal(lesson.id))}>Add homework</button>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p>No lessons found.</p>
-                        )}
+                                    </section>
+
+                                    <footer className="group-details-page__lesson-actions">
+                                        <button
+                                            type="button"
+                                            className="group-details-page__btn group-details-page__btn--primary"
+                                            onClick={() => openHomeworkModal(lesson.id)}
+                                        >
+                                            Add homework
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="group-details-page__btn group-details-page__btn--secondary"
+                                            onClick={() => navigate("/editLesson", {state: {lesson, group, token}})}
+                                        >
+                                            Edit lesson
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="group-details-page__btn group-details-page__btn--danger"
+                                            onClick={() => deleteLesson(lesson.id)}
+                                        >
+                                            Delete lesson
+                                        </button>
+                                    </footer>
+                                </article>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="group-details-page__empty">
+                            <p>No lessons found for this group yet.</p>
+                        </div>
+                    )}
+                </main>
+            </div>
+
+            {isHomeworkModalOpen && (
+                <div className="modal-overlay" onClick={closeHomeworkModal}>
+                    <div className="modal-content group-details-page__modal" onClick={(e) => e.stopPropagation()}>
+                        <button type="button" className="close-modal group-details-page__modal-close" onClick={closeHomeworkModal}>×</button>
+                        <h2>Add homework</h2>
+                        <textarea
+                            className="group-details-page__textarea"
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="Enter homework description"
+                            rows={5}
+                        />
+                        <button type="button" className="group-details-page__btn group-details-page__btn--primary group-details-page__modal-submit" onClick={addHomework}>
+                            Save homework
+                        </button>
                     </div>
                 </div>
-            </div>
+            )}
+
+            {isEditHomeworkModalOpen && (
+                <div className="modal-overlay" onClick={closeEditHomeworkModal}>
+                    <div className="modal-content group-details-page__modal" onClick={(e) => e.stopPropagation()}>
+                        <button type="button" className="close-modal group-details-page__modal-close" onClick={closeEditHomeworkModal}>×</button>
+                        <h2>Edit homework</h2>
+                        <textarea
+                            className="group-details-page__textarea"
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            placeholder="Edit homework content"
+                            rows={5}
+                        />
+                        <button type="button" className="group-details-page__btn group-details-page__btn--primary group-details-page__modal-submit" onClick={updateHomework}>
+                            Update homework
+                        </button>
+                    </div>
+                </div>
+            )}
+
         </div>
-        // <div className='user-card' style={{color: "white"}}>
-        //     <button onClick={goBack} className="go-back-button">go back</button>
-        //     <button onClick={() => RemoveTeacherFromGroup(group.id)}>Leave group</button>
-        //     <button onClick={() => ShowStudentsOfGroup(group.id, group.name)}>List students of group</button>
-        //     <h2>Group Details</h2>
-        //     <h2>{group?.name}</h2>
-        //     <p>English Level: {group?.englishLevel}</p>
-        //     <p>Start Time: {formatDisplayTime(group.startTime)}</p>
-        //     <p>End Time: {formatDisplayTime(group.endTime)}</p>
-        //     <p>Days of Week: {group?.daysOfWeek?.join(", ")}</p>
-        //     <p>Time: {new Date(group?.startTimeOfLesson).toLocaleTimeString()} - {new Date(group?.endTimeOfLesson).toLocaleTimeString()}</p>
-        //     <button onClick={(() =>createLesson())}>Create Lesson</button>
-        //     <h2>Lessons</h2>
-        //     {lessons.length > 0 ? (
-        //         <div className="user-grid">
-        //             {lessons.map((lesson) => (
-        //                 <div className='user-card' key={lesson.id}>
-        //                     <p>Date: {new Date(lesson.date).toLocaleDateString()}</p>
-        //                     <p>Topic: {lesson.topic}</p>
-        //                     <p style={{ whiteSpace: "pre-wrap" }}>Description: {lesson.description}</p>
-        //                     <p>Homework:</p>
-        //                     {Array.isArray(lesson.homework) && lesson.homework.length > 0 ? (
-        //                         <ul>
-        //                             {lesson.homework.map((hw) => (
-        //                                 <div key={hw.id}>
-        //                                     {hw.content}
-        //                                     <button onClick={(() => deleteHomework(hw.id, lesson.id))}>Delete Homework</button>
-        //                                     <button onClick={(() => openEditHomeworkModal(hw.id, hw.content))}>Edit Homework</button>
-        //                                 </div>
-        //                             ))}
-        //                         </ul>
-        //                     ):(
-        //                         <p>No homework yet</p>
-        //                     )}
-        //                     <button onClick={(() => deleteLesson(lesson.id))}>Delete Lesson</button>
-        //                     <button onClick={(() => navigate("/editLesson", {state: {lesson, group, token}}))}>Edit Lesson</button>
-        //                     <button onClick={(() => openHomeworkModal(lesson.id))}>Add homework</button>
-        //                 </div>
-        //             ))}
-        //         </div>
-        //     ) : (
-        //         <p>No lessons found.</p>
-        //     )}
-
-        //     {isHomeworkModalOpen && (
-        //         <div className="modal-overlay">
-        //             <div className="modal-content">
-        //                 <button className="close-modal" onClick={closeHomeworkModal}>X</button>
-        //                 <h2 style={{ color: "black" }}>Add Homework</h2>
-        //                 <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Enter homework description" style={{ width: "100%", height: "100px", marginBottom: "10px" }}/>
-        //                 <button onClick={addHomework}>Submit</button>
-        //             </div>
-        //         </div>
-        //     )}
-
-        //     {isEditHomeworkModalOpen && (
-        //         <div className="modal-overlay">
-        //             <div className="modal-content">
-        //                 <button className="close-modal" onClick={closeEditHomeworkModal}>X</button>
-        //                 <h2 style={{ color: "black" }}>Edit Homework</h2>
-        //                 <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} placeholder="Edit homework content" style={{ width: "100%", height: "100px", marginBottom: "10px" }}/>
-        //                 <button onClick={updateHomework}>Update</button>
-        //             </div>
-        //         </div>
-        //     )}
-
-        //     {isModalOpen && (
-        //         <div className="modal-overlay">
-        //             <div className="modal-content">
-        //             <button className="close-modal" onClick={() => setIsModalOpen(false)}>X</button>
-        //                 <h2 style={{color: "black"}}>Students in {selectedGroupName}</h2>
-        //                 {students.length > 0 ? (
-        //                     <ol style={{ textAlign: "left", paddingLeft: "20px" }}>
-        //                         {students.map(student => (
-        //                             <li  key={student.id} style={{marginBottom: "10px", marginLeft: "20px", color: "black"}}>{student.firstName} {student.lastName} <br/>{student.phoneNumber}</li>
-        //                         ))}
-        //                     </ol>
-        //                 ) : (
-        //                     <p style={{color: "black"}}>No students in this group.</p>
-        //                 )}
-        //             </div>
-        //         </div>
-        //     )}
-        //     {message && <p>{message}</p>}
-        // </div>
     );
 }
 export default GroupDetails;
