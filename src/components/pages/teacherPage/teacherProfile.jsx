@@ -166,7 +166,7 @@ const TeacherProfile = () => {
     }
 
     return(
-        <div className="dashboard">           
+        <div className="dashboard teacher-dashboard">           
             <div className='content-container'>
                 <div className='navbar'>
                     <ul className='navbar-content'>
@@ -174,7 +174,7 @@ const TeacherProfile = () => {
                     </ul>
                     <ul className='navbar-content'>
                         <li className={activeTab === 'myGroups' ?  "active" : ""} onClick={() => setActiveTab("myGroups")}><MdSpaceDashboard className='sidebarItems'/>My Groups</li>
-                        <li className={activeTab === 'teacherManagement' ?  "active" : ""} onClick={() => setActiveTab("teacherManagement")}><FaLayerGroup className='sidebarItems'/>Avaible groups</li>
+                        <li className={activeTab === 'teacherManagement' ?  "active" : ""} onClick={() => setActiveTab("teacherManagement")}><FaLayerGroup className='sidebarItems'/>Available groups</li>
                         <li className={activeTab === 'account' ?  "active" : ""} onClick={() => setActiveTab("account")}><IoPerson className='sidebarItems'/>Account</li>
                     </ul>
                 </div>

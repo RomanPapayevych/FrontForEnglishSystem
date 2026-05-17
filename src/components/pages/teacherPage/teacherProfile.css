@@ -1,3 +1,181 @@
+/* ----- Teacher dashboard (My Groups) ----- */
+.teacher-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #f8f6ff 0%, #ffffff 45%, #f3f0ff 100%);
+}
+
+.teacher-dashboard__content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+  box-sizing: border-box;
+}
+
+.teacher-dashboard__greet {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #11212d;
+  margin: 100px 0 28px;
+  padding: 0;
+}
+
+.teacher-dashboard__grid {
+  gap: 16px;
+  max-width: none;
+  margin: 0;
+}
+
+.teacher-dashboard__card.teacher-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border: 1px solid #ebe8f5;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(17, 33, 45, 0.05);
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+}
+
+.teacher-dashboard__card:hover {
+  transform: translateY(-2px);
+  border-color: #d4c4fd;
+  box-shadow: 0 8px 24px rgba(161, 141, 248, 0.12);
+}
+
+.teacher-dashboard__card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(161, 141, 248, 0.25);
+}
+
+.teacher-dashboard__card .teacher-card-time-container,
+.teacher-dashboard__time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 100px;
+  padding: 20px 16px;
+  background: #ede9fe;
+  color: #5b4aa8;
+  border-radius: 0;
+  width: auto;
+  font-size: 1rem;
+}
+
+.teacher-dashboard__time svg {
+  color: #a18df8;
+}
+
+.teacher-dashboard__time-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #11212d;
+}
+
+.teacher-dashboard__card .teacher-card-items-container,
+.teacher-dashboard__card-body {
+  padding: 18px 22px;
+  align-items: stretch;
+  width: auto;
+  flex-direction: column;
+}
+
+.teacher-dashboard__card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 16px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.teacher-dashboard__group-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #11212d;
+}
+
+.teacher-dashboard__level-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #5b4aa8;
+  background: #f3f0ff;
+  border: 1px solid #d4c4fd;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.teacher-dashboard__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  width: 100%;
+}
+
+.teacher-dashboard__schedule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.teacher-dashboard__meta-icon {
+  font-size: 1.15rem;
+  color: #a18df8;
+  flex-shrink: 0;
+}
+
+.teacher-dashboard__dates {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.teacher-dashboard__empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6b7280;
+  background: #ffffff;
+  border: 2px dashed #d4c4fd;
+  border-radius: 16px;
+}
+
+@media (max-width: 640px) {
+  .teacher-dashboard__greet {
+    font-size: 1.5rem;
+    margin-top: 88px;
+  }
+
+  .teacher-dashboard__card {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-dashboard__time {
+    flex-direction: row;
+    min-width: unset;
+    padding: 14px 18px;
+  }
+
+  .teacher-dashboard__card-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .teacher-container{
     display: flex;
     flex-direction: column;
