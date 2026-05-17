@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import {jwtDecode} from "jwt-decode" 
 import './userProfile.css'
+import Header from './pages/headerComponent/header'
 import { HiOutlineMenu } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
 import { GiStaryu } from "react-icons/gi";
@@ -88,30 +89,18 @@ const UserProfile = () => {
                 }
             });
             localStorage.removeItem("token");
-            navigate("/login");
+            navigate("/");
         }catch(error){
             console.error("Logout failed:", error.response ? error.response.data : error.message);
         }
     }
+
     return(
     <div className="english-level-container">
-        <div className="header">
-            <a href="" className="headerLogo">Blue Star</a>
-            <nav className="nav-links">
-                <a href="" className="nav-item">Home</a>
-                <a href="" className="nav-item">Contact</a>
-                <a href="" className="nav-item">About</a>
-            </nav>
-            <div className="menu-container">
-                <button className="menu-button" onClick={() => (setMenuOpen(!menuOpen))}><HiOutlineMenu/></button>
-                {menuOpen && (
-                    <div className="dropdown-menu" onMouseLeave={() => (setMenuOpen(false))}>
-                        <button className="logout-button" onClick={handleLogout}>Logout<FiLogOut className="logout-icon"/></button>
-                    </div>
-                )}
-            </div>
-        </div>
+    <Header token = {token}></Header>
+    <div className='position-container'>
         <h2 className='english-level-container-h2'>Select Your English Level</h2>
+    </div>
         {levels.length > 0 ? (
             <div className='levels-grid'>
                 {levels.map((lvl) => (

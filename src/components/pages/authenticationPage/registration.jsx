@@ -6,6 +6,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { LuPhone } from "react-icons/lu";
 import { TbLockPassword } from "react-icons/tb";
 import { GiConfirmed } from "react-icons/gi";
+import './authentication.css'
 
 
 const Registration = () => {

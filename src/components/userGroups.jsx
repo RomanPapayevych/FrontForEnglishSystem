@@ -7,6 +7,7 @@ import image from '../images/Photo7.jpg'
 import Swal from 'sweetalert2'
 import { HiOutlineMenu } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
+import Header from './pages/headerComponent/header';
 
 
 const UserGroups = () => {
@@ -44,8 +45,8 @@ const UserGroups = () => {
             showCancelButton: true,
             confirmButtonText: "Yes",
             cancelButtonText: "No",
-            background: '#11212D',
-            color: 'white',
+            background: '#fff',
+            color: 'black',
             iconColor: '#f9d835',
             confirmButtonColor: "#007718",
             cancelButtonColor: "#c20000",
@@ -101,6 +102,7 @@ const UserGroups = () => {
     const daysOfWeekMap = [
         "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
+    
     const daysMap = {
         'Sunday': 0,
         'Monday': 1,
@@ -110,24 +112,10 @@ const UserGroups = () => {
         'Friday': 5,
         'Saturday': 6,
     };
+
 return(
     <div className="groups-container">
-        <div className="header">
-            <a href="" className="headerLogo">Blue Star</a>
-                <nav className="nav-links">
-                    <a href="" className="nav-item">Home</a>
-                    <a href="" className="nav-item">Contact</a>
-                    <a href="" className="nav-item">About</a>
-                </nav>
-                <div className="menu-container">
-                    <button className="menu-button" onClick={() => (setMenuOpen(!menuOpen))}><HiOutlineMenu/></button>
-                        {menuOpen && (
-                            <div className="dropdown-menu" onMouseLeave={() => (setMenuOpen(false))}>
-                                <button className="logout-button" onClick={handleLogout}>Logout<FiLogOut className="logout-icon"/></button>
-                            </div>
-                        )}
-                </div>
-        </div>
+        <Header token={token} ></Header>
         <div className="button-back-container">
             <button onClick={goBack} className="button-back">{'<'}</button>
         </div>

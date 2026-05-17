@@ -83,24 +83,23 @@ const CreateGroup = () => {
     }
     return(
         <div>
-            {/* <button onClick={goBack}>Exit</button> */}
-            <h2 style={{textAlign:"center"}}>Create New Group</h2>
+            <h2 className='modal-title'>Create New Group</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    {/* <label>Name</label> */}
-                    <input className='default-input' type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder='Name'/>
+                <div className='modal-container-items'>
+                    <label className='modal-label'>Name</label>
+                    <input className='modal-input' type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder='Enter group name'/>
                 </div>
-                <div>
-                    {/* <label>Start Time</label> */}
-                    <input className='default-input' type="date" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+                <div className='modal-container-items'>
+                    <label className='modal-label'>Launch of Course</label>
+                    <input className='modal-input' type="date" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
                 </div>
-                <div>
-                    {/* <label>End Time</label> */}
-                    <input className='default-input' type="date" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
+                <div className='modal-container-items'>
+                    <label className='modal-label'>Finishing of Course</label>
+                    <input className='modal-input' type="date" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
                 </div>
-                <div>
-                    {/* <label>English Level</label> */}
-                    <select className='default-input' value={englishLevelId} onChange={(e) => setEnglishLevelId(e.target.value)} required>
+                <div className='modal-container-items'>
+                    <label className='modal-label'>English Level</label>
+                    <select className='modal-input' value={englishLevelId} onChange={(e) => setEnglishLevelId(e.target.value)} required>
                         <option value="">Select English Level</option>
                         {englishLevels.map(level => (
                             <option key={level.id} value={level.id}>{level.level}</option>
@@ -108,23 +107,33 @@ const CreateGroup = () => {
                     </select>
                 </div>
                 <div>
-                <div>
-                    <input className='default-input' type="time" value={startTimeOfLesson} onChange={(e) => setStartTimeOfLesson(e.target.value)} placeholder="Start time of Lesson"/>
-                </div>
-                <div>
-                    <input className='default-input' type="time" value={endTimeOfLesson} onChange={(e) => setEndTimeOfLesson(e.target.value)} placeholder="End time of Lesson"/>
-                </div>
-                    <label>Days of Week</label>
-                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
-                        <div key={day}>
-                            <input type="checkbox" checked={daysOfWeek.includes(day)} onChange={() => handleDayChange(day)} />
-                            <label>{day}</label>
+                    <div className='modal-container-items'>
+                        <label className='modal-label'>Start Time of Lesson</label>
+                        <input className='modal-input' type="time" value={startTimeOfLesson} onChange={(e) => setStartTimeOfLesson(e.target.value)} placeholder="Start time of Lesson"/>
+                    </div>
+                    <div className='modal-container-items'>
+                        <label className='modal-label'>End Time of Lesson</label>
+                        <input className='modal-input' type="time" value={endTimeOfLesson} onChange={(e) => setEndTimeOfLesson(e.target.value)} placeholder="End time of Lesson"/>
+                    </div>
+                    <div className='modal-container-items'>
+                        <label className='modal-label'>Days of Week</label>
+                        <div className='modal-checkboxes-container'>
+                            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
+                            <label key={day} className={`modal-checkbox ${daysOfWeek.includes(day) ? 'checked' : ''}`}>
+                                <input id={day} 
+                                    type="checkbox" 
+                                    checked={daysOfWeek.includes(day)} 
+                                    onChange={() => handleDayChange(day)} />
+                                    <span>{day}</span>
+                            </label>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
-                <button type="submit">Create Group</button>
+                <div className='modal-button-container'>
+                    <button type="submit">Create Group</button>
+                </div>
             </form>
-            
         </div>
     );
 }

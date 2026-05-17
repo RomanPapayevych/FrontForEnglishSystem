@@ -4,7 +4,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import "./teacherProfile.css";
+import { FiBox } from "react-icons/fi";
+import { MdSpaceDashboard } from "react-icons/md";
+import { FaLayerGroup } from "react-icons/fa";
+import { MdPlayLesson } from "react-icons/md";
+import { IoPerson } from "react-icons/io5"; 
+import AccountTab from '../personalRoom/accountTab';
+import TeacherGroups from './teacherGroups';
 import TeacherManagement from "./teacherManagement";
+// import MyGroups from './myGroups';
+// import Modal from '../modalWindow/modal';
+// import GroupDetails from './groupDetails';
+// import EditLesson from './editLesson';
+// import MyGroups from '../personalRoom/myGroup';
 
 const TeacherProfile = () => {
     const navigate = useNavigate();
@@ -19,6 +31,8 @@ const TeacherProfile = () => {
     const [students, setStudents] = useState([]);
     const [selectedGroupName, setSelectedGroupName] = useState(''); 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [user, setUser] = useState([]);
 
     useEffect(() => {
     const ChoosenGroups = async () => {
@@ -48,14 +62,32 @@ const TeacherProfile = () => {
                 setMessage(error.response?.data?.message || "An error occurred while choosen the group.");
             }
         }
-        ChoosenGroups()
-    })
+        ChoosenGroups();
+        fetchUser();
+    }, []);
+
+    const fetchUser = async () => {
+        try{
+            const decoded = jwtDecode(token);
+            const userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+            const response = await axios.get(`https://localhost:7186/api/Student/GetUserById/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("User data: ", response.data)
+            setUser(response.data);
+        }catch(error){
+            console.error("User not found:", error.response ? error.response.data : error.message);
+        }
+    }
 
     const RemoveTeacherFromGroup = async (groupId) => {
         if (!groupId) {
             setMessage("Group ID is missing. Please refresh the page.");
             return;
         }
+        
         try{
             const response = await axios.delete(`https://localhost:7186/api/Teacher/${groupId}/RemoveTeacherFromGroup`, {
                 headers : {Authorization : `Bearer ${token}`}, 
@@ -95,9 +127,7 @@ const TeacherProfile = () => {
     const Groups = async () => {
         navigate("/teacherManagement", {state: {email, id}})
     }
-    const GroupDetails = async (group) => {
-        navigate("/groupDetails", {state: {email, group}})
-    }
+    
     // const ChoosenGroups = async () => {
     //     navigate("/teacherGroups", {state: {email, id}})
     // }
@@ -119,76 +149,40 @@ const TeacherProfile = () => {
             console.error("Logout failed:", error.response ? error.response.data : error.message);
         }
     }
-    const renderContent = () => {
-        if(activeTab === "myGroups") {
-            return(
-                <div className='content'>
-                    <h1>Hello Teacher</h1>
-                    <div>
-                        {groups.length > 0 ? (
-                            <div className="user-grid">
-                                {groups.map((group) => ( group ? (
-                                    <div key={group.id} className='user-card' onClick={() => GroupDetails(group)} style={{ cursor: "pointer" }}>
-                                        <p>{group.name || "No name available"} ___ {new Date(group.startTimeOfLesson).toLocaleTimeString()} - {new Date(group.endTimeOfLesson).toLocaleTimeString()} ___ {group.englishLevel}</p>
-                                        <p>Days of Week: {Array.isArray(group.daysOfWeek) ? group.daysOfWeek.join(', ') : 'No days available'}</p>
-                                    </div>
-                                ) : null
-                            ))}
-                            </div>
-                        ) : (
-                            <p>No groups created yet.</p>
-                        )}
 
-                        {isModalOpen && (
-                            <div className="modal-overlay">
-                                <div className="modal-content">
-                                    <button className="close-modal" onClick={() => setIsModalOpen(false)}>X</button>
-                                    <h2 style={{color: "black"}}>Students in {selectedGroupName}</h2>
-                                    {students.length > 0 ? (
-                                        <ol style={{ textAlign: "left", paddingLeft: "20px" }}>
-                                            {students.map(student => (
-                                                <li  key={student.id} style={{marginBottom: "10px", marginLeft: "20px", color: "black"}}>{student.firstName} {student.lastName} <br/>{student.phoneNumber}</li>
-                                            ))}
-                                        </ol>
-                                    ) : (
-                                        <p style={{color: "black"}}>No students in this group.</p>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>  
-                </div> 
-            );
-        }else if(activeTab === "account"){
-            return(
-                <div className="content">
-                    <p>Person</p>
-                    <button onClick={handleLogout} className='btn'>Logout</button>
-                </div>
-            ); 
-        }else if(activeTab === "teacherManagement"){
-            return <TeacherManagement/>
-        }else{
-            return <p>Select a tab to view details.</p>;
+    const renderContent = () => {
+        switch(activeTab){
+            case "myGroups": 
+                return <TeacherGroups 
+                    user={user}
+                    setIsModalOpen={setIsModalOpen}/>;
+            case "teacherManagement":
+                return <TeacherManagement />;
+            case "account":
+                return <AccountTab handleLogout={handleLogout} user={user}/>;
+            default:
+                return <p>Select a tab to view details.</p>;
         }
     }
 
     return(
-    <div className='teacher-container'>
-        <div className="dashboard">
-            <div className='sidebar'>
-                <h2>Teacher</h2>
-                <ul>
-                    <li className={activeTab === 'myGroups' ?  "active" : ""} onClick={() => setActiveTab("myGroups")}>My Groups</li>
-                    <li className={activeTab === 'teacherManagement' ?  "active" : ""} onClick={() => setActiveTab("teacherManagement")}>Groups</li>
-                    <li className={activeTab === 'account' ?  "active" : ""} onClick={() => setActiveTab("account")}>Account</li>
-                </ul>
+        <div className="dashboard">           
+            <div className='content-container'>
+                <div className='navbar'>
+                    <ul className='navbar-content'>
+                        <h2 className='navbar-greeting'><FiBox /> Hi, {email}</h2>
+                    </ul>
+                    <ul className='navbar-content'>
+                        <li className={activeTab === 'myGroups' ?  "active" : ""} onClick={() => setActiveTab("myGroups")}><MdSpaceDashboard className='sidebarItems'/>My Groups</li>
+                        <li className={activeTab === 'teacherManagement' ?  "active" : ""} onClick={() => setActiveTab("teacherManagement")}><FaLayerGroup className='sidebarItems'/>Avaible groups</li>
+                        <li className={activeTab === 'account' ?  "active" : ""} onClick={() => setActiveTab("account")}><IoPerson className='sidebarItems'/>Account</li>
+                    </ul>
+                </div>
             </div>
+            <div key={activeTab} className="content page-enter">
+                {renderContent()}
+            </div>   
         </div>
-        <div>
-            {renderContent()}
-        </div>
-    </div>
     );
 }
 export default TeacherProfile;

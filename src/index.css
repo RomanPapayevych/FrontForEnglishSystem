@@ -80,18 +80,28 @@ button:focus-visible {
   margin: 0 auto;
 }
 
-.catalog-title {
-  font-size: 3rem;
-  color: #f5f5f5;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+.user-header{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  padding: 40px 40px;
+}
+.user-header-h {
+  margin: 0;
+  color: #000000;
+  /* letter-spacing: 2px; */
+}
+
+.user-header-p{
+  font-size: 18px;
+  color: #000000;
 }
 
 .user-grid {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
-  /* justify-content: center; */
   gap: 30px;
   margin-top: 20px;
   max-width: 1280px;
@@ -100,44 +110,56 @@ button:focus-visible {
 }
 
 .div-containers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 9px;
+  margin-bottom: 20px;
   min-width: 270px;
-  background-color: #11212d;
+  font-weight: 500;
+  font-size: 18px;
+  color: black;
+  background-color: white;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
   transition: transform 0.2s ease-in-out;
-  border: 2px #4a5c6a solid;
   box-sizing: border-box; 
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .div-containers:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.div-containers p {
-  text-align: center;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+.dropdown{
+  background-color: white;
+  color: black;
+  font-size: 18px;
+  font-weight: 600;
+  align-items: center;
+  height: 50px;
+  margin-right: 5%;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-family: "arial", sans-serif;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
-.dropdown{
-  background-color: #4A5C6A;
-  color: white;
-  width: 1000%;
-  font-size: 16px;
-  margin-top: 20px;
-  margin-right: 1%;
-  border-radius: 8px;
-  padding: 10px;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+.dropdown:focus {
+  outline: none;
+}
+
+.dropdown-options{
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
 .user-photo{
-  font-size: 32px; 
+  font-size: 20px;
+  padding: 0 10px;
 }
 
 .default-input{
@@ -224,7 +246,6 @@ button:focus-visible {
   box-sizing: border-box; 
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-
 }
 
 .user-card:hover {
@@ -299,9 +320,9 @@ button:focus-visible {
 }
 
 /* -----------SideBar(myGroup)------------------- */
+/* 
 .dashboard {
   display: flex;
-  /* height: 100vh;  */
   color: white;
   font-family: Arial, sans-serif;
 }
@@ -318,13 +339,13 @@ button:focus-visible {
   align-items: flex-start; 
   padding: 20px;
   z-index: 100;
-  background-color: #11212D;  
+  background-color: #f2f2f2;  
   box-shadow: 2px 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .sidebar h2 {
   margin-bottom: 20px;
-  color: #f2f2f2;
+  color: #2d2f2e;
 }
 
 .sidebar ul {
@@ -334,6 +355,7 @@ button:focus-visible {
 }
 
 .sidebar ul li {
+  color: #2d2f2e;
   font-size: large;
   padding: 10px 15px;
   margin: 10px 0;
@@ -344,19 +366,22 @@ button:focus-visible {
   gap: 10px;
   border-radius: 8px;
   transition: background-color 0.3s ease;
-  /* position: relative; */
 }
 
 .sidebar ul li.active, .sidebar ul li:hover {
-  background-color: #4A5C6A;
+  background-color: #d2d2d2;
 }
 
 .sidebarItems {
   font-size: 20px;
-}
+} */
 
 .content {
-  margin-left: 280px;
+  background-color:#fff;
+  /* background-image: url("./images/geometric-bgc.jpg");
+  background-size: contain;
+  background-repeat: repeat; */
+  /* margin-left: 270px; */
   flex: 1;
   padding: 20px;
   z-index: 1;
@@ -365,25 +390,31 @@ button:focus-visible {
 .groups-container {
   display: flex;
   flex-wrap: wrap;
+  background-color: #fff;
+  max-width: 1200px;
+  margin: 0 auto;
   gap: 20px;
   padding-top: 30px;
   padding-bottom: 30px;
+  padding: 0 10% 0 10%;
 }
 
 .card {
-  background-color: #11212D;
+  background-color: #fff;
+  color: #000000;
   flex: 1 1 calc(50% - 20px);
-  min-width: 250px;
+  min-width: 310px;
+  margin-bottom: 20px;
   box-sizing: border-box;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   transition: transform 0.3s;
   border-radius: 20px;
-  border: 2px black solid;
+  border: 1px black solid;
 }
 
 .card:hover {
   transition: transform 0.3s ;
-  background-color: #152b3c; 
+  /* background-color: #152b3c;  */
   transform: scale(1.05);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -397,7 +428,7 @@ button:focus-visible {
 .card h2 {
   margin-bottom: 20px;
   font-size: 24px;
-  color: #f9d835;
+  color: #a18df8;
 }
 
 .button-container {
@@ -411,24 +442,25 @@ button:focus-visible {
   display: flex;
   justify-content: flex-start;
   margin-bottom: 20px;
+  padding-top: 100px;
 }
 
 .button-back{
   padding: 10px 15px;
-  margin-top: 65px;
-  background-color: #f9d835;
+  margin-top: 80px;
+  background-color: #a18df8;
   width: 130px;
   height: 50px;
   color: #000000;
 }
 
 .button-back:hover {
-  background-color: #a88c02;
+  background-color: #7762d6;
 }
 
 .select-button-two {
   padding: 10px 15px;
-  background-color: #f9d835;
+  background-color: #a18df8;
   width: 250px;
   height: 60px;
   color: #000000;
@@ -440,47 +472,54 @@ button:focus-visible {
 }
 
 .select-button-two:hover {
-  background-color: #a88c02;
+  background-color: #7762d6;
 }
 
-.btn {
-  display: inline-block;
+.btn, .btn-delete{
+  display: inline-flex;
   padding: 15px 20px;
-  margin-top: 20px;
-  background-color: #f9d835;
-  color: #242424;
+  margin: 10px;
+  background-color: #a18df8;
+  align-items: center;
+  color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .btn:hover {
-  background-color: #a88c02;
+  background-color: #7762d6;
+}
+
+.btn:focus {
+  outline: none;
 }
 
 .btn-delete {
   display: inline-flex;
   float: left;
-  padding: 15px 20px;
   background-color: #f90000;
-  color: black;
-  border: none;
-  border-radius: 8px;
-  width: auto;
-  font-size: 16px; 
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .btn-delete:hover {
   background-color: #b42400;
 }
 
-.wrapper{
+.wrapper-start{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  color: black;
+  /* gap: 20px; */
+}
+
+.wrapper-end{
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .default-wrapper{
@@ -489,29 +528,37 @@ button:focus-visible {
 }
 
 .btn-add {
-  margin: 15px;
+  /* margin: 15px;
   display: inline-block;
   padding: 15px 20px;
   background-color: #f9d835;
   color: #242424;
   width: auto;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
-  cursor: pointer;
+  cursor: pointer; */
+  background-color: white;
+  color: #a18df8;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
   transition: background-color 0.3s;
+  margin-bottom: 20px;
 }
 
 .btn-add:hover {
-  background-color: #a88c02;
+  background-color: rgb(230, 230, 230);
+}
+
+.btn-add:focus {
+  outline: none;
 }
 
 .add-wrapper{
   display: flex;
-  justify-content: flex-start;
+  justify-content: end;
 }
 
-
+/* 
 .lesson-card {
   background-color: #11212D;
   padding: 20px;
@@ -521,7 +568,7 @@ button:focus-visible {
   transition: transform 0.3s, box-shadow 0.3s;
   border: 2px solid #4A5C6A; 
   position: relative;
-  width: 100%; 
+  width: 60%; 
   flex: 1 1 calc(33.333% - 20px); 
   box-sizing: border-box; 
   margin: 20px auto;
@@ -545,7 +592,6 @@ button:focus-visible {
   white-space: pre-wrap;
   font-size: 18px;
   margin: 10px 0;
-  /* color: #ffffff; */
 }
 
 .lesson-date{
@@ -578,153 +624,7 @@ button:focus-visible {
   color: #ffffff;
   margin-bottom: 5px;
   transition: background-color 0.3s;
-}
-
-/* --------------Registration form--------------- */
-/* Загальний стиль для сторінки */
-.login-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.background-blur {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url(../src/images/background_study.jpg);
-  background-size: cover;
-  background-position: center;
-  filter: blur(8px);
-  z-index: -1; 
-}
-
-.login_frame {
-  position: relative;
-  z-index: 1;
-  width: 350px;
-  padding: 30px;
-  margin: 100px auto;
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  text-align: center;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
-/* Заголовок */
-.login_frame h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.login-input{
-  display: flex;
-  align-items: center;
-  width: 100%;
-  border-radius: 8px;
-  padding: 1px;
-  margin: 10px 0;
-  background-color: #cfcfcf;
-  transition: border 0.3s ease;
-}
-
-.inp {
-  width: 100%;
-  padding: 5px;
-  margin: 10px 0;
-  color: #69818D;
-  border: none;
-  background-color: #cfcfcf;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-  transition: border 0.3s ease;
-  font-weight: 500;
-  box-sizing: border-box;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-.inp:focus::placeholder{
-  transition: 0.3s;
-  color: #69818D;
-}
-
-.loader {
-  width: 40px;
-  height: 40px;
-  border: 5px solid #ccc;
-  border-top-color: #007bff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.login-icons{
-  background-color: white;
-  border-radius: 6px;
-  padding: 7px;
-  margin: 5px;
-  font-size: 20px;
-  color: #69818D;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  background-color: #69818D;
-  border: none;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background-color: #2D4A53;
-}
-
-.login-p{
-  margin-top: 15px;
-  font-size: 14px;
-  color: #555;
-}
-
-a {
-  color: #69818D;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: #2D4A53;
-  font-weight: bold;
-}
-
-.error-message {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
+} */
 
 /* -------------Swal Sweet Alert2------MyGroup---------- */
 .my-custom-popup{

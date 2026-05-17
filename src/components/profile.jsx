@@ -3,8 +3,8 @@ import axios from "axios";
 import { useNavigate, Link } from 'react-router-dom';
 import {jwtDecode} from "jwt-decode"    
 import { useLocation } from "react-router-dom";
-import TeacherProfile from "./teacherProfile";
-import AdminProfile from "./adminProfile";
+import TeacherProfile from "./pages/teacherPage/teacherProfile";
+import AdminProfile from "./pages/adminPage/adminProfile";
 import UserProfile from "./userProfile";
 import Logo from '../images/LogoOfEnglish.jpg'
 import { GiStaryu } from "react-icons/gi";
@@ -48,7 +48,7 @@ const Profile = () => {
         }
     }
     return(
-        <div className='container_profile'>
+        <div className=''>
             <div className="header-background">
             {decodedToken ? (
                 <>

@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import axios, { HttpStatusCode } from "axios";
 import { FaCirclePlus } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
-import Modal from "./modal"
+import Modal from '../modalWindow/modal';
+
 import { FaCloudDownloadAlt } from "react-icons/fa";
 
 const LevelManagement = () => {
@@ -108,9 +109,9 @@ const LevelManagement = () => {
     }
 
     return(
-      <div>
+      <div className='admin-container'>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <h2>Create English Level</h2>
+            <h2 className='modal-title'>Create English Level</h2>
             <div className='default-wrapper'>
                 <label class="custom-file-upload">
                     <div className='user-photo'>
@@ -121,31 +122,45 @@ const LevelManagement = () => {
                 </label>
                 {preview && <img src={preview} alt='Preview' className='preview-photo'/>}
             </div>
-            <input className='default-input' type="text" value={level} onChange={(e) =>setLevel(e.target.value)} placeholder="Enter level name (e.g., A1, B2)"/>
-            <input className='default-input' type='text' value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Enter description (optional)' />
-            <button className='btn' onClick={createLevel}>Add level</button> 
+            <div className='modal-container-items'>
+                <label className='modal-label'>Level name</label>
+                <input className='modal-input' type="text" value={level} onChange={(e) =>setLevel(e.target.value)} placeholder="Enter level name (e.g., A1, B2)"/>
+            </div>
+            <div className='modal-container-items'>
+                <label className='modal-label'>Description</label>
+                <input className='modal-input' type='text' value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Enter description (optional)' />
+            </div>
+            <div className='modal-button-container'>
+                <button type="submit" onClick={createLevel}>Add level</button>
+            </div>
             {message && <p>{message}</p>}
         </Modal> 
 
-        <h2>Available Levels</h2>
-        <div className='add-wrapper'>
-            <button className='btn-add' onClick={openModal}><FaCirclePlus/></button>
-        </div>
         {levels.length > 0 ? (
-            <div className="user-grid">
-                <div className="user-grid">
-                    {levels.map((lvl) =>(
-                        <div key={lvl.id} className='my-card'>
-                            <h2 key={lvl.id}>{lvl.level}</h2>
-                            <p>{lvl.description}</p>
-                            {lvl.imageUrl && <img src={`https://localhost:7186${lvl.imageUrl}`} alt='Level' style={{ width: '50px', height: '50px' }} />}
-                            <div className='wrapper'>
-                                <button className='btn-delete' onClick={() => deleteLevel(lvl.id)}><FaRegTrashCan/></button>
-                            </div>
-                        </div> 
-                    ))}
-                </div> 
+        <div>
+            <div className='user-header'>
+                <h2 className='user-header-h'>Available Levels</h2>
+                <p className='user-header-p'>Here you can manage English Levels</p>
             </div>
+            <div className='add-wrapper'>
+                    <button className='btn-add' onClick={openModal}>Add new level</button>
+            </div>
+            
+            {levels.map((lvl) => (
+                <div key={lvl.id} className='my-car'>
+                    <div className='div-containers'>
+                        <div className='wrapper-start'>
+                            {lvl.imageUrl && <img className='admin-level-image' src={`https://localhost:7186${lvl.imageUrl}`} alt='Level'/>}
+                            <h2 className='admin-level-h' key={lvl.id}>{lvl.level}</h2>
+                        </div>
+                        <div className='wrapper-end'>
+                            <p className='admin-description'>{lvl.description}</p>
+                            <button className='btn-delete' onClick={() => deleteLevel(lvl.id)}><FaRegTrashCan/></button>
+                        </div>
+                    </div>
+                </div> 
+            ))}
+        </div>
         ) : (
             <p>No levels created yet.</p>
         )}

@@ -4,8 +4,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaCirclePlus } from "react-icons/fa6";
-import Modal from "./modal"
 import CreateGroup from './createGroup';
+import { GrSchedule } from "react-icons/gr";
+import { MdOutlineSchedule } from "react-icons/md";
+import { RxPerson } from "react-icons/rx";
+import { GrSchedules } from "react-icons/gr";
+import Modal from '../modalWindow/modal';
 
 const GroupManagement = () => {
     const navigate = useNavigate('');
@@ -14,6 +18,7 @@ const GroupManagement = () => {
     const id = location.state?.id
     const token = localStorage.getItem('token');
     const [groups, setGroups] = useState([]);
+    const [message, setMessage] = useState('')
 
     const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -53,10 +58,6 @@ const GroupManagement = () => {
         navigate("/profile", {state: {email, id}})
     }
 
-    // const CreateGroup = () =>{
-    //     navigate("/createGroup", {state: {email, id}})
-    // }
-
     const deleteLevel = async (groupId) => {
         try {
             const response = await axios.delete(`https://localhost:7186/api/Admin/DeleteGroup/${groupId}`, {
@@ -68,7 +69,7 @@ const GroupManagement = () => {
             }
         } catch (error) {
             console.error("Error deleting group:", error.response?.data || error.message);
-            //setMessage(error.response?.data?.title || "Failed to delete group. Please try again.");
+            setMessage(error.response?.data?.title || "Failed to delete group. Please try again.");
         }
     }
 
@@ -87,53 +88,62 @@ const GroupManagement = () => {
     }
     
     return (
-        <div>
-
-            {/* <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <h2>Create English Level</h2>
-            <div className='default-wrapper'>
-                <label class="custom-file-upload">
-                    <div className='user-photo'>
-                        <FaCloudDownloadAlt />
-                    </div>
-                    <input className='upload-image' type='file' accept='image/*' onChange={handleImageChange}/>
-                    Click to upload
-                </label>
-                {preview && <img src={preview} alt='Preview' className='preview-photo'/>}
-            </div>
-            <input className='default-input' type="text" value={level} onChange={(e) =>setLevel(e.target.value)} placeholder="Enter level name (e.g., A1, B2)"/>
-            <input className='default-input' type='text' value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Enter description (optional)' />
-            <button className='btn' onClick={createLevel}>Add level</button> 
-            {message && <p>{message}</p>}
-            </Modal>  */}
+        <div className='admin-container'>
             <Modal isOpen={isModalOpen} onClose={closeModal}>
                 <CreateGroup></CreateGroup>
             </Modal>
-
-            <h2>Available Groups</h2>
-            <div className='add-wrapper'>
-                {/* <button className='btn-add' onClick={CreateGroup}><FaCirclePlus /></button> */}
-                <button className='btn-add' onClick={openModal}><FaCirclePlus /></button>
-            </div>
             {groups.length > 0 ? (
-            <div className="user-grid">
-                {groups.map((group) => ( group ? (
-                    <div key={group.id} className='my-card'>
-                        <h2>{group.name || "No name available"}</h2>
-                        <p>Duration of studying: <strong>{formatDisplayTime(group.startTime)} - {formatDisplayTime(group.endTime)}</strong></p>
-                        <p>Duration of Lesson: <strong>{new Date(group.startTimeOfLesson).toLocaleTimeString()} - {new Date(group.endTimeOfLesson).toLocaleTimeString()}</strong></p>
-                        <p>English Level: <strong>{group.englishLevel}</strong></p>
-                        <p>Teacher: <strong>{group.teacher ? `${group.teacher.firstName} ${group.teacher.lastName}` : 'No teacher assigned'}</strong></p>
-                        <p>Days of Week: <strong>{Array.isArray(group.daysOfWeek) ? group.daysOfWeek.join(', ') : 'No days available'}</strong></p>
-                        <div className='wrapper'>
-                            <button className='btn-delete' onClick={() => deleteLevel(group.id)}><FaRegTrashCan /></button>
+            <div>
+                <div className='user-header'>
+                    <h2 className='user-header-h'>Available Groups</h2>
+                    <p className='user-header-p'>Here you can manage English Groups</p>
+                </div>
+                <div className='add-wrapper'>
+                    <button className='btn-add' onClick={openModal}>Add new group</button>
+                </div>
+                <div className="group-table-container">
+                    <div className="group-table-header">
+                    <div>Group</div>
+                    <div>Study Period</div>
+                    <div>Lesson Time</div>
+                    <div>English Level</div>
+                    <div>Teacher</div>
+                    <div>Days of Week</div>
+                    <div>Action</div>
+                    </div>
+
+                    {groups.map((group) => (
+                    <div key={group.id} className="group-table-row">
+                        <div>{group.name || "No name available"}</div>
+                        <div>
+                            {formatDisplayTime(group.startTime)} - {formatDisplayTime(group.endTime)}
+                        </div>
+                        <div>
+                        {new Date(group.startTimeOfLesson).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} -  
+                        {new Date(group.endTimeOfLesson).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </div>
+                        <div>{group.englishLevel}</div>
+                        <div>
+                        {group.teacher 
+                            ? `${group.teacher.firstName} ${group.teacher.lastName}` 
+                            : 'No teacher assigned'}
+                        </div>
+                        <div>
+                        {Array.isArray(group.daysOfWeek) 
+                            ? group.daysOfWeek.join(', ') 
+                            : 'No days available'}
+                        </div>
+                        <div>
+                        <button className="btn-delete" onClick={() => deleteLevel(group.id)}>
+                            <FaRegTrashCan />
+                        </button>
                         </div>
                     </div>
-                ) : null
-                ))}
+                    ))}
+                </div>
             </div>
             ) : (
-                <p>No groups created yet.</p>
+            <p>No groups created yet.</p>
             )}
         </div>
     );

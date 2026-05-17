@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, Link } from 'react-router-dom';
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLockPassword } from "react-icons/tb";
-
+import './authentication.css'
 
 const Login = () => {
     const [email, setEmail] = useState('')

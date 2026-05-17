@@ -1,30 +1,45 @@
+import axios from "axios";
+import Swal from 'sweetalert2'
+
+import './personalRoom.css'
+
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {jwtDecode} from "jwt-decode";
+
 import { FaLayerGroup } from "react-icons/fa";
 import { MdPlayLesson } from "react-icons/md";
+import { MdSpaceDashboard } from "react-icons/md";
 import { IoPerson } from "react-icons/io5";
-import Swal from 'sweetalert2'
-import image from '../images/Photo8.jpg'
+import { FiBox } from "react-icons/fi";
+
+import MyGroupTab from './myGroupTab';
+import LessonsTab from './lessonTab';
+import DashboardTab from './dashboardTab';
+import AccountTab from './accountTab';
 
 const MyGroup = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { email, id, groupId: initialGroupId} = location.state || {};
+    const {email, id, groupId: initialGroupId} = location.state || {};
     const token = localStorage.getItem('token');
     const [groupId, setGroupId] = useState(initialGroupId);
     const [myGroup, setMyGroup] = useState();
     const [lessons, setLessons] = useState([]);
     const [message, setMessage] = useState('');
+    const [user, setUser] = useState([]);
 
-    const [activeTab, setActiveTab] = useState("myGroup");
-
+    const [activeTab, setActiveTab] = useState("Dashboard");
+    
+    const [open, setOpen] = useState(false);
+    const [selectedLesson, setSelectedLesson] = useState(null);
+    
     useEffect(() => {
         if (groupId) {
             fetchGroupId(groupId);
-            fetchLessons()
+            fetchLessons();
+            fetchUser();
         } else {
             fetchGroupId();
         }
@@ -78,8 +93,8 @@ const MyGroup = () => {
             showCancelButton: true,
             confirmButtonText: "Yes",
             cancelButtonText: "No",
-            background: '#11212D',
-            color: 'white',
+            background: '#fff',
+            color: 'black',
             iconColor: '#c20000',
             confirmButtonColor: "#c20000",
             cancelButtonColor: "#007718",
@@ -128,87 +143,66 @@ const MyGroup = () => {
         }
     };
 
-    const renderContent = () => {
-        if(activeTab === "myGroup") {
-            return(
-                <div className="my-card">
-                    {myGroup ? (
-                    <div>
-                        <h2><strong>{myGroup.name}</strong></h2>
-                        <div>
-                            <p>Duration of styding: <strong>{new Date(myGroup.startTime).toLocaleDateString()} - {new Date(myGroup.endTime).toLocaleDateString()}</strong></p>
-                            <p>Duration of Lesson: <strong>{new Date(myGroup.startTimeOfLesson).toLocaleTimeString()} - {new Date(myGroup.endTimeOfLesson).toLocaleTimeString()}</strong></p>
-                            <p>EnglishLevel: <strong>{myGroup.englishLevel}</strong></p>
-                            <p>Teacher: <strong>{myGroup.teacher ? `${myGroup.teacher.firstName} ${myGroup.teacher.lastName}` : 'No teacher assigned'}</strong></p>
-                            <p>Days of Week: <strong>{Array.isArray(myGroup.daysOfWeek.$values) ? myGroup.daysOfWeek.$values.join(', ') : 'No days available'}</strong></p>
-                        </div>  
-                    </div>
-                    ): (
-                        <p>Loading group information...</p>
-                    )}
-                    <button onClick={LeaveGroup} className="btn">Leave group</button>
-                </div>
-            );
-        } else if(activeTab === "Lessons"){
-            return(
-                <div className="lessons">
-                    {Array.isArray(lessons) && lessons.length > 0 ? (
-                        <div>
-                            {lessons.map((lesson) => (
-                                <div className="lesson-card" key={lesson.id}>
-                                    <p className='lesson-date'>{new Date(lesson.date).toLocaleDateString()}</p>
-                                    <p>{lesson.topic}</p>
-                                    <p>{lesson.description}</p>
-                                    {Array.isArray(lesson.homework) && lesson.homework.length > 0 ? (
-                                        <ul>
-                                            <p className='lesson-homework'>Homework:</p>
-                                            {lesson.homework.map((hw) => (
-                                                <div key={hw.id}>
-                                                    <p>{hw.content}</p>
-                                                </div>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className='no-homework'>No homework yet</p>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    ):(
-                         <div className='not-found-container'>
-                            <div className='not-found-content'>
-                                <img className='not-found-image' src={image} alt="" />
-                            </div>
-                            <div className='not-found-content'>
-                                <h3 className='not-found'>{"No lessons yet :("}</h3>
-                            </div>
-                            <p className='description-p'>New lessons coming soon!</p>
-                        </div>
-                    )}
-                </div>
-            );
-        } else if(activeTab === 'Account') {
-            return (
-                <div className="account">
-                    <p>Person</p>
-                    <button onClick={handleLogout}>Logout</button>
-                </div>
-            );
-        } else {
-            return <p>Select a tab to view details.</p>;
+    const fetchUser = async () => {
+        try{
+            const decoded = jwtDecode(token);
+            const userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+            const response = await axios.get(`https://localhost:7186/api/Student/GetUserById/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("User data: ", response.data)
+            setUser(response.data);
+        }catch(error){
+            console.error("User not found:", error.response ? error.response.data : error.message);
         }
     }
+
+    const renderContent = () => {
+        switch(activeTab){
+            case 'myGroup': 
+                return <MyGroupTab myGroup={myGroup} LeaveGroup={LeaveGroup}/>
+            case 'Lessons': 
+                return(
+                    <LessonsTab 
+                        lessons={lessons}
+                        open={open} 
+                        setOpen={setOpen}
+                        selectedLesson={selectedLesson}
+                        setSelectedLesson={setSelectedLesson}
+                    />
+                );
+            case 'Dashboard': 
+                return(
+                    <DashboardTab user={user}/>
+                );
+
+            case 'Account': 
+                return(
+                    <AccountTab handleLogout={handleLogout} user={user}/>
+                );
+            default: 
+                return <p>Select a tab</p>;
+        }
+    };
+
     return (
-        <div className="dashboard">
-            <div className="sidebar">
-                <h2>My App</h2>
-                <ul>
-                    <li className={activeTab === 'myGroup' ?  "active" : ""} onClick={() => setActiveTab("myGroup")}><FaLayerGroup className='sidebarItems'/>My Group</li>
-                    <li className={activeTab === 'Lessons' ?  "active" : ""} onClick={() => setActiveTab("Lessons")}><MdPlayLesson className='sidebarItems'/>Lessons</li>
-                    <li className={activeTab === 'Account' ?  "active" : ""} onClick={() => setActiveTab("Account")}><IoPerson className='sidebarItems'/>Account</li>
-                </ul>
+        <div className="dashboard">           
+            <div className='content-container'>
+                <div className='navbar'>
+                    <ul className='navbar-content'>
+                        <h2 className='navbar-greeting'><FiBox /> Hi, {email}</h2>
+                    </ul>
+                    <ul className='navbar-content'>
+                        <li className={activeTab === 'Dashboard' ?  "active" : ""} onClick={() => setActiveTab("Dashboard")}><MdSpaceDashboard className='sidebarItems'/>Dashboard</li>
+                        <li className={activeTab === 'myGroup' ?  "active" : ""} onClick={() => setActiveTab("myGroup")}><FaLayerGroup className='sidebarItems'/>My Group</li>
+                        <li className={activeTab === 'Lessons' ?  "active" : ""} onClick={() => setActiveTab("Lessons")}><MdPlayLesson className='sidebarItems'/>Lessons</li>
+                        <li className={activeTab === 'Account' ?  "active" : ""} onClick={() => setActiveTab("Account")}><IoPerson className='sidebarItems'/>Account</li>
+                    </ul>
+                </div>
             </div>
-            <div className="content">
+            <div key={activeTab} className="content page-enter">
                 {renderContent()}
             </div>   
         </div>

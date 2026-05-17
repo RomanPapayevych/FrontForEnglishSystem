@@ -1,0 +1,146 @@
+.teacher-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 70%;
+    margin: 150px auto;
+    padding: 20px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 20px;
+}
+
+.teacher-grid {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 30px;
+  margin-top: 20px;
+  max-width: 1280px;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+.teacher-card {
+    display: flex;
+    background-color: white;
+    color: black;
+    padding: 20px;  
+    border-radius: 10px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
+    transition: transform 0.2s ease-in-out;
+    width: 100%;
+    box-sizing: border-box; 
+    font-family: "Arial", sans-serif;
+    cursor: pointer;
+}
+
+.teacher-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.teacher-p {
+    margin: 0;
+    color: black !important;
+}
+
+.teacher-h {
+    margin: 0;
+    color: black !important;
+}
+
+.align-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 350px;
+    flex-shrink: 0;
+}
+
+.right-column {
+    flex: 1;
+}
+
+.align-container-start {
+    display: flex;
+    color: black;
+    font-size: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.custom-icon {
+    font-size: 30px;
+    margin-right: 5px;
+}
+
+.teacher-card-time-container{
+    display: flex;
+    background-color: #a18df8;
+    border-radius: 10px;
+    padding: 10px;
+    align-items: center;
+    width: 10%;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.margin-center-container{
+    margin: 0 auto;
+}
+
+.teacher-card-items-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.container-space-btw{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Group Details */
+.teacher-space-btw-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;    
+    gap: 20px;
+}
+
+.teacher-group-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 150px auto;
+    padding: 20px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 20px;
+}
+
+.group-details {
+    background-color: #11212d;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease-in-out;
+    width: 100%;
+    border: 2px #4a5c6a solid;
+    box-sizing: border-box;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}

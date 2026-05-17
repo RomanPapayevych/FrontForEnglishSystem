@@ -57,34 +57,43 @@ const TeacherManagement = () => {
             setMessage(error.response?.data?.message || "An error occurred while choosen the group.");
         }
     }
+    
     const formatDisplayTime = (dateTime) => {
         const formattedDate = new Date(dateTime);
         return formattedDate.toLocaleDateString("uk-UA");
     };
+
     const goBack = () => {
         navigate("/profile", {state: {email, id}})
     }
+
     return(
-        <div className='content'>
-            {/* <button onClick={goBack} className="go-back-button">go back</button> */}
-            <h2>Available Groups</h2>
+        <div>
             {groups.length > 0 ? (
-            <div className="user-grid">
-                {groups.map((group) => ( group ? (
-                    <div key={group.id} className='my-card'>
-                        <h2>{group.name || "No name available"}</h2>
-                        <p>Duration of studying: <strong>{formatDisplayTime(group.startTime)} - {formatDisplayTime(group.endTime)}</strong></p>
-                        <p>Duration of Lesson: <strong>{new Date(group.startTimeOfLesson).toLocaleTimeString()} - {new Date(group.endTimeOfLesson).toLocaleTimeString()}</strong></p>
-                        <p>English Level: <strong>{group.englishLevel}</strong></p>
-                        <p>Teacher: <strong>{group.teacher ? `${group.teacher.firstName} ${group.teacher.lastName}` : 'No teacher assigned'}</strong></p>
-                        <p>Days of Week: <strong>{Array.isArray(group.daysOfWeek) ? group.daysOfWeek.join(', ') : 'No days available'}</strong></p>
-                        <button className='btn' onClick={() => AssignTeacherForGroup(group.id)}>Choose group for teaching</button>
+                <div className='teacher-container'>
+                    <div className='user-header'>
+                        <h2 className='user-header-h'>Available Groups</h2>
+                        <p className='user-header-p'>Here you can chose groups to teach</p>
                     </div>
-                ) : null
-                ))}
-            </div>
+                    <div>
+                        {groups.map((group) => ( group ? (
+                            <div key={group.id} className='my-card specific-margin-card'>
+                                <h2>{group.name || "No name available"}</h2>
+                                <p>Duration of studying: <strong>{formatDisplayTime(group.startTime)} - {formatDisplayTime(group.endTime)}</strong></p>
+                                <p>Duration of Lesson: <strong>{new Date(group.startTimeOfLesson).toLocaleTimeString()} - {new Date(group.endTimeOfLesson).toLocaleTimeString()}</strong></p>
+                                <p>English Level: <strong>{group.englishLevel}</strong></p>
+                                <p>Teacher: <strong>{group.teacher ? `${group.teacher.firstName} ${group.teacher.lastName}` : 'No teacher assigned'}</strong></p>
+                                <p>Days of Week: <strong>{Array.isArray(group.daysOfWeek) ? group.daysOfWeek.join(', ') : 'No days available'}</strong></p>
+                                <button className='btn' onClick={() => AssignTeacherForGroup(group.id)}>Choose group for teaching</button>
+                            </div>
+                        ) : null
+                        ))}
+                    </div> 
+                </div>
             ) : (
-                <p>No groups created yet.</p>
+                <div className='teacher-container'>
+                    <p style={{color: "black"}}>Empty catalog of users</p>
+                </div>
             )}
         </div>
     )

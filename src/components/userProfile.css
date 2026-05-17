@@ -86,6 +86,7 @@
   padding: 10px;
   min-width: 150px;
 }
+
 .logout-button {
   background-color: #f9d835;
   color: black;
@@ -164,7 +165,7 @@
 
 /* ---------UserProfile------------ */
 body {
-  background-color: #11212d;
+  background-color:#fff;
   margin: 0 auto;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -191,38 +192,31 @@ h2 {
   position: fixed;
   top: 0;
   display: flex;
-  /* align-items: center; */
   justify-content: center;
   position: relative;
+  background-color: #fff;
   z-index: 1;
-  /* margin-top: -150px; */
   min-height: 100vh;
-  /* padding-top: 20px; */
 }
-
-/* .header-background{
-  position: fixed;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  margin-top: 150px;
-} */
 
 .levels-grid {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
+  margin: 0 auto;
+  gap: 30px;
 }
 
 .level-card {
-  background-color: #11212d;
+  background-color: #fff;
+  margin: 0 auto;
+  box-sizing: border-box;
   padding: 20px;
   border-radius: 10px;
+  max-width: 1200px;
+  width: 100%;
+  box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19);
   transition: transform 0.3s;
 }
 
@@ -233,12 +227,13 @@ h2 {
 
 .level-card h3 {
   margin: 10px 0;
-  color: #f9d835;
+  /* color: #f9d835; */
+  color: #A28DF9;
 }
 
 .select-button {
   padding: 10px 15px;
-  background-color: #f9d835;
+  background-color: #A28DF9;
   margin-left: 400px;
   margin-top: 60px;
   width: 250px;
@@ -252,7 +247,7 @@ h2 {
 }
 
 .select-button:hover {
-  background-color: #a88c02;
+  background-color: #7762d6;
 }
 
 .message {
@@ -262,8 +257,9 @@ h2 {
 
 .not-found-container {
   font-style: italic;
-  margin: 100px auto;
+  margin: 50px auto;
   padding: 30px;
+  /* box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19); */
   align-self: center;
   border-radius: 20px;
   display: flex;
@@ -289,8 +285,9 @@ h2 {
 
 .not-found {
   font-size: 24px;
+  text-align: center;
   float: left;
-  color: #f9d835;
+  color: #a18df8;
   font-weight: bold;
   margin: 15px auto;
 }
@@ -301,18 +298,33 @@ h2 {
 }
 
 .english-level-container {
+  background: #fff;
   color: #ccd0cf;
   padding: 30px;
   border-radius: 10px;
 }
+
+.position-container{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+
+}
+
 .english-level-container-h2{
-  margin-top: 100px;
+  margin-top: 200px;
+  color: #000000;
 }
 .level-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  background-color: #fff;
+  border-radius: 20px;
 }
 .level-image {
   margin-right: 20px;
@@ -327,7 +339,7 @@ h2 {
   width: 400px;
 }
 .description-p {
-  color: #9ba8ab;
+  color: #000000;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   margin-bottom: 20px;
@@ -337,6 +349,29 @@ h2 {
   margin: 0 auto;
 }
 
+@media (max-width: 1280px){
+
+  .english-level-container-h2{
+    text-align: center;
+  }
+
+  .level-content{
+    display: block;
+  }
+
+  .level-card{
+    max-width: 400px;
+  }
+  .select-button{
+    margin-left: 0;
+  }
+
+  .image-p{
+    width: 300px;
+  }
+
+}
+/* 
 .my-card {
   background-color: #11212d;
   flex: 1 1 calc(75% - 20px);
@@ -367,4 +402,4 @@ h2 {
   margin-bottom: 20px;
   font-size: 24px;
   color: #f9d835;
-}
+} */

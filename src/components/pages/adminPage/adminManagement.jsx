@@ -5,6 +5,7 @@ import axios from "axios";
 import { IoPersonSharp } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa";
+import './adminPage.css';
 
 const AdminManagement = () => {
     const navigate = useNavigate('')   
@@ -80,36 +81,37 @@ const AdminManagement = () => {
     }
     
     return(
-        <div className="catalog-container">
-            <h2>Users</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+        <div>
             {users.length > 0 ? (
-                <div className="user-grid">
-                    {users.map((user) => (
-                        <div key={user.id} className="div-containers">
-                            <p><IoPersonSharp className='user-photo' /></p>
-                            <p>{user.email}</p>
-                            <div className='wrapper'>
-                                <select className='dropdown' onChange={(e) => handleRoleChange(user.id, e.target.value)} value={selectedRoles[user.id] || ""}>
-                                    <option value="" disabled>{user.roles && user.roles.$values && user.roles.$values.length > 0 ? user.roles.$values.join(", ") : "No roles"}</option>
-                                    {roleOptions.map((role) => (
-                                        <option key={role} value={role}>{role}</option>
-                                    ))}
-                                </select>
-                            <button onClick={() => handleAssignRole(user.id)} className="btn"><FaCheck /></button>
-                            </div>
-                            <div className='wrapper'>
-                                <button onClick={() => handleDelete(user.id)} className="btn-delete"><FaRegTrashCan /></button>
-                            </div>
+                <div className='admin-container'>
+                    <div className='user-header'>
+                        <h2 className='user-header-h'>Users</h2>
+                        <p className='user-header-p'>Here you can manage rules for each user</p>
+                    </div>
+                    {users.map(user => (
+                        <div key={user.id} className='div-containers'>
+                                <div className='wrapper-start'>
+                                    <IoPersonSharp className='user-photo'/>
+                                    <p>{user.email}</p>
+                                </div>
+                                <div className='wrapper-end'>
+                                    <select className='dropdown' onChange={(e) => handleRoleChange(user.id, e.target.value)} value={selectedRoles[user.id] || ""}>
+                                        <option value="" disabled>{user.roles && user.roles.$values && user.roles.$values.length > 0 ? user.roles.$values.join(", ") : "No roles"}</option>
+                                        {roleOptions.map((role) => (
+                                            <option className='dropdown-options' key={role} value={role}>{role}</option>
+                                        ))}
+                                    </select>
+                                    <button onClick={() => handleAssignRole(user.id)} className="btn"><FaCheck /></button>
+                                    <button onClick={() => handleDelete(user.id)} className="btn-delete"><FaRegTrashCan /></button>
+                                </div>
                         </div>
                     ))}
                 </div>
-            ) : (
-                <div>
+            ): (
+                <div className='admin-container'>
                     <p style={{color: "black"}}>Empty catalog of users</p>
                 </div>
             )}
-            {/* <button onClick={goBack} className="go-back-button">goBack</button> */}
         </div>
     );
 }
