@@ -185,7 +185,7 @@ const GroupDetails = () =>{
                             <div>
                                 <span className="group-details-page__meta-label">Study period</span>
                                 <span className="group-details-page__meta-value">
-                                    {formatDate(group?.startTime)} вЂ“ {formatDate(group?.endTime)}
+                                    {formatDate(group?.startTime)} - {formatDate(group?.endTime)}
                                 </span>
                             </div>
                         </li>
@@ -194,7 +194,7 @@ const GroupDetails = () =>{
                             <div>
                                 <span className="group-details-page__meta-label">Lesson time</span>
                                 <span className="group-details-page__meta-value">
-                                    {formatTime(group?.startTimeOfLesson)} вЂ“ {formatTime(group?.endTimeOfLesson)}
+                                    {formatTime(group?.startTimeOfLesson)} - {formatTime(group?.endTimeOfLesson)}
                                 </span>
                             </div>
                         </li>
