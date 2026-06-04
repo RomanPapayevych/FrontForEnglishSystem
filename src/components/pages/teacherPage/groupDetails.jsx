@@ -7,15 +7,35 @@ import { GrSchedule } from "react-icons/gr";
 import { MdOutlineSchedule } from "react-icons/md";
 import { RxPerson } from "react-icons/rx";
 import { GrSchedules } from "react-icons/gr";
+import { BiLogoZoom } from "react-icons/bi";
+import { MdAdd } from "react-icons/md";
+
+const normalizeDaysOfWeek = (days) => {
+    if (!days) return [];
+    if (Array.isArray(days)) return days;
+    if (days.$values && Array.isArray(days.$values)) return days.$values;
+    return [];
+};
+
+const normalizeGroup = (raw) => {
+    if (!raw) return raw;
+    return {
+        ...raw,
+        daysOfWeek: normalizeDaysOfWeek(raw.daysOfWeek),
+    };
+};
 
 const GroupDetails = () =>{
     const navigate = useNavigate();
     const location = useLocation();
-    const { email, id} = location.state || {};
-    const { group } = location.state || {};
+    const { email, id, lessonCreated } = location.state || {};
+    const initialGroup = location.state?.group;
     const token = localStorage.getItem('token');
+    const [group, setGroup] = useState(initialGroup);
     const [lessons, setLessons] = useState([]);
     const [message, setMessage] = useState('');
+    const [zoomLink, setZoomLink] = useState(initialGroup?.zoomLink || '');
+    const [isSavingZoom, setIsSavingZoom] = useState(false);
 
     const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState(false);
     const [selectedLessonId, setSelectedLessonId] = useState(null);
@@ -25,29 +45,73 @@ const GroupDetails = () =>{
     const [selectedHomeworkId, setSelectedHomeworkId] = useState(null);
     const [editContent, setEditContent] = useState('');
 
+    const fetchLessons = async (groupId) => {
+        try {
+            const response = await axios.get(`https://localhost:7186/api/Teacher/LessonsOfGroup/${groupId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const cleanedLessons = response.data.$values.map(lesson => ({
+                id: lesson.id,
+                date: lesson.date,
+                topic: lesson.topic,
+                description: lesson.description,
+                homework: lesson.homework?.$values ?? (Array.isArray(lesson.homework) ? lesson.homework : []),
+            }));
+            setLessons(cleanedLessons);
+        } catch (error) {
+            console.error("Error fetching lessons:", error.response?.data || error.message);
+            setMessage("An error occurred while fetching lessons.");
+        }
+    };
+
+    const fetchGroupDetails = async (groupId) => {
+        try {
+            const response = await axios.get(`https://localhost:7186/api/Teacher/Group/${groupId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const normalized = normalizeGroup(response.data);
+            setGroup(normalized);
+            setZoomLink(normalized.zoomLink || '');
+        } catch (error) {
+            console.error("Error fetching group:", error.response?.data || error.message);
+        }
+    };
+
     useEffect(() => {
         if (group?.id) {
-            const fetchLessons = async () => {
-                try {
-                    const response = await axios.get(`https://localhost:7186/api/Teacher/LessonsOfGroup/${group.id}`,{ 
-                        headers: { Authorization: `Bearer ${token}` } 
-                    });
-                    const cleanedLessons = response.data.$values.map(lesson => ({
-                        id: lesson.id,
-                        date: lesson.date,  
-                        topic: lesson.topic,
-                        description: lesson.description,
-                        homework: lesson.homework.$values,
-                    }))
-                    setLessons(cleanedLessons);
-                } catch (error) {
-                    console.error("Error fetching lessons:", error.response?.data || error.message);
-                    setMessage("An error occurred while fetching lessons.");
-                }
-            };
-            fetchLessons();
+            fetchGroupDetails(group.id);
+            fetchLessons(group.id);
         }
-    }, [group, token]);
+    }, [group?.id, token, lessonCreated]);
+
+    const saveZoomLink = async () => {
+        if (!group?.id) return;
+        setIsSavingZoom(true);
+        try {
+            const response = await axios.put(
+                `https://localhost:7186/api/Teacher/${group.id}/ZoomLink`,
+                { zoomLink },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const updatedGroup = response.data?.data || response.data;
+            if (updatedGroup?.zoomLink !== undefined) {
+                setGroup((prev) => ({ ...prev, zoomLink: updatedGroup.zoomLink }));
+                setZoomLink(updatedGroup.zoomLink || '');
+            } else {
+                setGroup((prev) => ({ ...prev, zoomLink }));
+            }
+            setMessage("Zoom link saved successfully.");
+        } catch (error) {
+            console.error("Error saving zoom link:", error.response?.data || error.message);
+            setMessage(error.response?.data?.message || "Failed to save Zoom link.");
+        } finally {
+            setIsSavingZoom(false);
+        }
+    };
+
+    const goToCreateLesson = () => {
+        navigate("/createLesson", { state: { group, email, id } });
+    };
 
     const RemoveTeacherFromGroup = async (groupId) => {
         if (!groupId) {
@@ -211,10 +275,39 @@ const GroupDetails = () =>{
                             <GrSchedules className="group-details-page__meta-icon" aria-hidden />
                             <div>
                                 <span className="group-details-page__meta-label">Schedule</span>
-                                <span className="group-details-page__meta-value">{group?.daysOfWeek?.join(", ")}</span>
+                                <span className="group-details-page__meta-value">
+                                    {normalizeDaysOfWeek(group?.daysOfWeek).join(", ") || "—"}
+                                </span>
                             </div>
                         </li>
                     </ul>
+
+                    <section className="group-details-page__zoom">
+                        <h2 className="group-details-page__zoom-title">
+                            <BiLogoZoom className="group-details-page__zoom-icon" aria-hidden />
+                            Zoom conference
+                        </h2>
+                        <label className="group-details-page__zoom-label" htmlFor="zoom-link-input">
+                            Meeting link for students
+                        </label>
+                        <input
+                            id="zoom-link-input"
+                            type="url"
+                            className="group-details-page__zoom-input"
+                            value={zoomLink}
+                            onChange={(e) => setZoomLink(e.target.value)}
+                            placeholder="https://zoom.us/j/..."
+                        />
+                        <button
+                            type="button"
+                            className="group-details-page__btn group-details-page__btn--primary group-details-page__zoom-save"
+                            onClick={saveZoomLink}
+                            disabled={isSavingZoom}
+                        >
+                            {isSavingZoom ? "Saving..." : "Save Zoom link"}
+                        </button>
+                    </section>
+
                     <button
                         type="button"
                         className="group-details-page__leave-btn"
@@ -226,8 +319,18 @@ const GroupDetails = () =>{
 
                 <main className="group-details-page__main">
                     <div className="group-details-page__main-header">
-                        <h2 className="group-details-page__section-title">Lessons</h2>
-                        <span className="group-details-page__lesson-count">{lessons.length} total</span>
+                        <div className="group-details-page__main-header-left">
+                            <h2 className="group-details-page__section-title">Lessons</h2>
+                            <span className="group-details-page__lesson-count">{lessons.length} total</span>
+                        </div>
+                        <button
+                            type="button"
+                            className="group-details-page__btn group-details-page__btn--primary group-details-page__create-lesson-btn"
+                            onClick={goToCreateLesson}
+                        >
+                            <MdAdd aria-hidden />
+                            Create lesson
+                        </button>
                     </div>
 
                     {lessons.length > 0 ? (
@@ -303,6 +406,14 @@ const GroupDetails = () =>{
                     ) : (
                         <div className="group-details-page__empty">
                             <p>No lessons found for this group yet.</p>
+                            <button
+                                type="button"
+                                className="group-details-page__btn group-details-page__btn--primary"
+                                onClick={goToCreateLesson}
+                            >
+                                <MdAdd aria-hidden />
+                                Create first lesson
+                            </button>
                         </div>
                     )}
                 </main>

@@ -3,11 +3,26 @@ import image from '../../../images/Photo8.jpg'
 import { MdOutlinePlayLesson } from "react-icons/md";
 import { BiLogoZoom } from "react-icons/bi";
 
-const LessonsTab = ({lessons, open, setOpen, selectedLesson, setSelectedLesson}) => {
+const LessonsTab = ({lessons, open, setOpen, selectedLesson, setSelectedLesson, zoomLink}) => {
+    const hasZoomLink = zoomLink && zoomLink.trim().length > 0;
+
     return(
         <div className="lessons">
             <div className="container-link-lesson">
-                <a href="" className="active-link-lesson">Join Zoom Conference<BiLogoZoom className="active-link-zoom-icon"/></a>
+                {hasZoomLink ? (
+                    <a
+                        href={zoomLink}
+                        className="active-link-lesson"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Join Zoom Conference<BiLogoZoom className="active-link-zoom-icon"/>
+                    </a>
+                ) : (
+                    <span className="active-link-lesson active-link-lesson--disabled" title="Teacher has not added a Zoom link yet">
+                        Join Zoom Conference<BiLogoZoom className="active-link-zoom-icon"/>
+                    </span>
+                )}
             </div>
             {Array.isArray(lessons) && lessons.length > 0 ? (
                 <div>

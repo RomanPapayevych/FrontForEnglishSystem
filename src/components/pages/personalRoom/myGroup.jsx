@@ -171,6 +171,7 @@ const MyGroup = () => {
                         setOpen={setOpen}
                         selectedLesson={selectedLesson}
                         setSelectedLesson={setSelectedLesson}
+                        zoomLink={myGroup?.zoomLink}
                     />
                 );
             case 'Dashboard': 

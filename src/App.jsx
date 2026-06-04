@@ -38,6 +38,7 @@ function App() {
           <Route path='/myGroup' element={<MyGroup/>}/>
           <Route path='/teacherManagement' element={<TeacherManagement/>}/>
           <Route path='/GroupDetails' element={<GroupDetails/>}/>
+          <Route path='/groupDetails' element={<GroupDetails/>}/>
           <Route path='/createLesson' element={<CreateLesson/>}/>
           <Route path='/editLesson' element={<EditLesson/>}/>
           <Route path='*' element={<div>NotFound</div>}/>

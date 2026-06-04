@@ -365,6 +365,12 @@
   text-decoration: none;
 }
 
+.active-link-lesson--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .active-link-zoom-icon{
   font-size: 30px;
 }

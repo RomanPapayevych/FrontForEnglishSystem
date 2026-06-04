@@ -37,6 +37,7 @@ const TeacherGroups = ({user}) => {
                     englishLevel: group.englishLevel,
                     teacher: group.teacher,
                     daysOfWeek: group.daysOfWeek.$values,
+                    zoomLink: group.zoomLink,
                 }))
                 setGroups(cleanedGroups)
                 }catch(error){
